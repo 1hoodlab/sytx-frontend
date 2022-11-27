@@ -21,18 +21,19 @@ export function isPrintableKeyCode(keyCode: number) {
 export function handleBackspace(term: Terminal, input: string): string {
   if (input.length === 0) return input;
 
-  //   if (term._core.buffer.x === 0 && term._core.buffer.y > 1) {
-  //     // fix it???
-  //     // Move up
-  //     term.write("\x1b[A");
-  //     // Move to the end
-  //     term.write("\x1b[" + term._core.buffer._cols + "G");
-  //     term.write(" ");
-  //   } else {
-  //     term.write("\b \b");
-  //   }
-  //   return input.substring(0, input.length - 1);
-  return "";
+  // @ts-ignore
+  if (term._core.buffer.x === 0 && term._core.buffer.y > 1) {
+    // Move up
+    term.write("\x1b[A");
+
+    // @ts-ignore
+    // Move to the end
+    term.write("\x1b[" + term._core.buffer._cols + "G");
+    term.write(" ");
+  } else {
+    term.write("\b \b");
+  }
+  return input.substring(0, input.length - 1);
 }
 
 export function getSpacing(spacing: number, spacer = " ") {
@@ -47,7 +48,7 @@ export function getSpacing(spacing: number, spacer = " ") {
 }
 
 export function getShellPrompt(shell: string) {
-  return TermColors.Purple + `${shell}:~$` + TermColors.Reset;
+  return TermColors.Green + `${shell}:~$ ` + TermColors.Reset;
 }
 
 export function colorize(color: string, text: string) {

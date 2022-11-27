@@ -1,11 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { IEvent, Terminal } from "xterm";
+import React, { useCallback, useEffect, useRef } from "react";
+import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { exec } from "./commands";
 import { HistorySize, TermColors } from "./constants";
@@ -120,6 +114,7 @@ export default function TerminalComponent({ contractName }: IProps) {
           }
           break;
         }
+
         case "l": {
           if (ev.ctrlKey) {
             term.clear();
@@ -135,7 +130,7 @@ export default function TerminalComponent({ contractName }: IProps) {
           userInput = userInput.trim();
           if (userInput.length === 0) {
             userInput = "";
-            prompt(term, "123");
+            prompt(term, contractName);
             return;
           }
 
@@ -168,7 +163,7 @@ export default function TerminalComponent({ contractName }: IProps) {
       }
       const hasModifier = ev.altKey || ev.ctrlKey || ev.metaKey;
 
-      if (!hasModifier && isPrintableKeyCode(ev.keyCode)) {
+      if (!hasModifier) {
         term.write(key);
         userInput += key;
       }
@@ -178,6 +173,7 @@ export default function TerminalComponent({ contractName }: IProps) {
   async function runTerminal(terminalRef: HTMLElement) {
     const term = new Terminal({
       allowTransparency: true,
+      allowProposedApi: true,
       cursorBlink: true,
       scrollback: 1000,
       screenReaderMode: false,
@@ -190,7 +186,16 @@ export default function TerminalComponent({ contractName }: IProps) {
     fitAddon.fit();
     term.focus();
     await initTerminalSession(term, contractName);
+    term.attachCustomKeyEventHandler((arg) => {
+      if (arg.ctrlKey && arg.code === "KeyV" && arg.type === "keydown") {
+        navigator.clipboard.readText().then((text) => {
+          term.write(text);
+        });
+      }
+      return true;
+    });
     term.onKey(createOnKeyHandler(term, contractName));
+
     return term;
   }
 
