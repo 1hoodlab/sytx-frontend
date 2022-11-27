@@ -175,11 +175,14 @@ export default function TerminalComponent({ contractName }: IProps) {
       allowTransparency: true,
       allowProposedApi: true,
       cursorBlink: true,
+
       scrollback: 1000,
       screenReaderMode: false,
       fontWeight: "bold",
       macOptionIsMeta: true,
     });
+    console.log(term.rows);
+    console.log(terminalRef.offsetHeight);
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
 
@@ -210,5 +213,5 @@ export default function TerminalComponent({ contractName }: IProps) {
     run();
   }, []);
 
-  return <div ref={terminalRef} />;
+  return <div ref={terminalRef} className={"h-full overflow-y"} />;
 }
