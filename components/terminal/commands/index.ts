@@ -1,6 +1,10 @@
 import { Terminal } from "xterm";
 import { TermColors } from "../constants";
-import { colorize, getSpacing } from "../utils";
+import { colorize } from "../utils";
+import call from "./call";
+import find from "./find";
+import help from "./help";
+import ls from "./ls";
 
 export type SystemCommand = {
   id: string;
@@ -11,28 +15,8 @@ export type SystemCommand = {
   loaded?: boolean;
   exec?(term: Terminal, _args: string[], onProcessExit?: any): Promise<any>;
 };
-const SystemCommands: SystemCommand[] = [
-  {
-    id: "help",
-    args: 0,
-    description: "show manual pages for a command",
-    exec: async (term: Terminal, _args: string[]) => {
-      term.writeln("available commands:");
-      // Add 3 tabs for spacing. Align each description to the first command description
-      const firstCommandSpacing = SystemCommands[0].id.length + 12;
-      for (const { id, description } of SystemCommands) {
-        if (id === "help") continue;
+export const SystemCommands: SystemCommand[] = [help, call, find, ls];
 
-        term.writeln(
-          "\t" +
-            colorize(TermColors.Green, id) +
-            getSpacing(firstCommandSpacing - id.length) +
-            description
-        );
-      }
-    },
-  },
-];
 export async function exec(
   term: Terminal,
   userInput: string,

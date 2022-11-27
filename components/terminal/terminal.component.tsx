@@ -177,6 +177,7 @@ export default function TerminalComponent({ contractName }: IProps) {
       cursorBlink: true,
       scrollback: 1000,
       screenReaderMode: false,
+      fontWeight: "bold",
       macOptionIsMeta: true,
     });
     const fitAddon = new FitAddon();
