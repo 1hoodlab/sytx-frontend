@@ -1,14 +1,34 @@
-import { Box, Button, Flex, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import axios from "axios";
 import dynamic from "next/dynamic";
 import CreateContractInfo from "../components/create-contract";
 import { ListContracts } from "../components/list-contracts";
+import { NetWorkType } from "../components/list-contracts/card";
+import { baseUrl } from "../constants";
 const TerminalComponent = dynamic(
   () => import("../components/terminal/terminal.component"),
   {
     ssr: false,
   }
 );
-export default function Home() {
+
+export interface Network {
+  id: number;
+  name: string;
+  icon_network_url: string;
+  icon_currency_url: string;
+  rpc_url: string;
+  rpc_url_backup: string;
+  chain_id: number;
+  type: NetWorkType;
+  currency_symbol: string;
+  block_explorer_url: string;
+}
+
+interface IProps {
+  networks: Network[];
+}
+export default function Home({ networks }: IProps) {
   return (
     <Box
       height={"full"}
@@ -36,7 +56,7 @@ export default function Home() {
         </Text>
         <Flex direction={"column"} height={"inherit"}>
           <ListContracts />
-          <CreateContractInfo />
+          <CreateContractInfo networks={networks} />
         </Flex>
       </Box>
       <Box
@@ -70,4 +90,11 @@ export default function Home() {
       </Box>
     </Box>
   );
+}
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const { data } = await axios(baseUrl + "/web3-transaction/networks");
+
+  // Pass data to the page via props
+  return { props: { networks: data } };
 }

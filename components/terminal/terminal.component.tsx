@@ -181,8 +181,6 @@ export default function TerminalComponent({ contractName }: IProps) {
       fontWeight: "bold",
       macOptionIsMeta: true,
     });
-    console.log(term.rows);
-    console.log(terminalRef.offsetHeight);
     const fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
 
