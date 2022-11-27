@@ -2,8 +2,12 @@ import { Box, Card, CardBody, Text, Image } from "@chakra-ui/react";
 import React from "react";
 import { beautifyAddress } from "../../utils";
 
+export enum NetWorkType {
+  mainnet = "mainnet",
+  testnet = "testnet",
+}
 interface IProps {
-  networkType: string;
+  networkType: NetWorkType;
   brandUrl: string;
   contractName: string;
   contractAddress: string;
@@ -20,7 +24,7 @@ export default function ContractItem({
       <Box
         border={"2px solid black"}
         w={"fit-content"}
-        bg={"#313AFF"}
+        bg={networkType === NetWorkType.testnet ? "#313AFF" : "#FF4A31;"}
         borderRadius={"5px"}
         transform={"rotate(-90deg);"}
         padding={"3px 10px 3px 10px"}
