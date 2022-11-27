@@ -11,16 +11,18 @@ import { exec } from "./commands";
 import { HistorySize, TermColors } from "./constants";
 import { getShellPrompt, handleBackspace, isPrintableKeyCode } from "./utils";
 
-export default function TerminalComponent() {
+interface IProps {
+  contractName: string;
+}
+export default function TerminalComponent({ contractName }: IProps) {
   const terminalRef = useRef(null);
 
-  const [term, setTerm] = useState<Terminal | null>(null);
   function printError(term: Terminal, error: string) {
     term.writeln(TermColors.Red + error);
   }
 
-  function prompt(term: Terminal, shell: string) {
-    term.write("\r\n" + getShellPrompt(shell));
+  function prompt(term: Terminal, contractName: string) {
+    term.write("\r\n" + getShellPrompt(contractName));
   }
 
   function deleteCurrentInput(term: Terminal, input: string) {
@@ -31,8 +33,8 @@ export default function TerminalComponent() {
     }
   }
 
-  async function initTerminalSession(term: Terminal) {
-    term.write(getShellPrompt("123"));
+  async function initTerminalSession(term: Terminal, contractName: string) {
+    term.write(getShellPrompt(contractName));
   }
 
   function loadCommandHistory() {
@@ -57,7 +59,7 @@ export default function TerminalComponent() {
     setTimeout(() => localStorage.setItem("history", JSON.stringify(store)), 0);
   }
 
-  function createOnKeyHandler(term: Terminal) {
+  function createOnKeyHandler(term: Terminal, contractName: string) {
     // Track the user input
     let userInput = "";
     // Track command history
@@ -66,7 +68,7 @@ export default function TerminalComponent() {
     let currentProcessId: any = null;
 
     function onProcessExit() {
-      prompt(term, "123");
+      prompt(term, contractName);
       currentProcessId = null;
     }
 
@@ -111,7 +113,7 @@ export default function TerminalComponent() {
         }
         case "c": {
           if (ev.ctrlKey) {
-            prompt(term, "123");
+            prompt(term, contractName);
             userInput = "";
             currentHistoryPosition = commandHistory.length;
             return;
@@ -159,7 +161,7 @@ export default function TerminalComponent() {
 
           userInput = "";
           if (currentProcessId === null) {
-            prompt(term, "132");
+            prompt(term, contractName);
           }
           return;
         }
@@ -187,13 +189,12 @@ export default function TerminalComponent() {
     term.open(terminalRef);
     fitAddon.fit();
     term.focus();
-    await initTerminalSession(term);
-    term.onKey(createOnKeyHandler(term));
+    await initTerminalSession(term, contractName);
+    term.onKey(createOnKeyHandler(term, contractName));
     return term;
   }
 
   const run = useCallback(async () => {
-    console.log(terminalRef)
     if (terminalRef.current) {
       return await runTerminal(terminalRef.current);
     }

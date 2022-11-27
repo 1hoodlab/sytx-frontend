@@ -8,7 +8,7 @@ const TerminalComponent = dynamic(
 export default function Home() {
   return (
     <div>
-      <TerminalComponent />
+      <TerminalComponent contractName="testnet@minesweeper" />
     </div>
   );
 }
