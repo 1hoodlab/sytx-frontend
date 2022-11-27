@@ -1,3 +1,4 @@
+import { Contract } from "./../../../pages/index";
 import { Terminal } from "xterm";
 import { TermColors } from "../constants";
 import { colorize } from "../utils";
@@ -5,6 +6,7 @@ import call from "./call";
 import find from "./find";
 import help from "./help";
 import ls from "./ls";
+import set from "./set";
 
 export type SystemCommand = {
   id: string;
@@ -13,14 +15,20 @@ export type SystemCommand = {
   description?: string;
   process?: boolean;
   loaded?: boolean;
-  exec?(term: Terminal, _args: string[], onProcessExit?: any): Promise<any>;
+  exec?(
+    term: Terminal,
+    _args: string[],
+    onProcessExit?: any,
+    contractInfo?: Contract
+  ): Promise<any>;
 };
-export const SystemCommands: SystemCommand[] = [help, call, find, ls];
+export const SystemCommands: SystemCommand[] = [help, call, find, ls, set];
 
 export async function exec(
   term: Terminal,
   userInput: string,
-  onProcessExit: any
+  onProcessExit: any,
+  contractInfo?: Contract
 ) {
   const [input, ...args] = userInput.split(/\s+/);
   const command = SystemCommands.find((c) => c.id === input);
@@ -45,7 +53,7 @@ export async function exec(
   }
 
   //   await command.exec(term, args, onProcessExit);
-  command.exec && (await command.exec(term, args, onProcessExit));
+  command.exec && (await command.exec(term, args, onProcessExit, contractInfo));
   if (command.process) {
     return command.id;
   }

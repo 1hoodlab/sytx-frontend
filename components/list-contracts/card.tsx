@@ -11,6 +11,7 @@ interface IProps {
   brandUrl: string;
   contractName: string;
   contractAddress: string;
+  setContractInfo: any;
 }
 
 export default function ContractItem({
@@ -18,9 +19,19 @@ export default function ContractItem({
   brandUrl,
   contractName,
   contractAddress,
+  setContractInfo,
 }: IProps) {
   return (
-    <Card bg={"rgba(217, 217, 217, 0.1);"} color={"white"} cursor={"pointer"}>
+    <Card
+      onClick={setContractInfo}
+      bg={"rgba(217, 217, 217, 0.1);"}
+      color={"white"}
+      cursor={"pointer"}
+      _hover={{
+        border: "1px solid #8000FF",
+        transitionDuration: "0.3s",
+      }}
+    >
       <Box
         border={"2px solid black"}
         w={"fit-content"}

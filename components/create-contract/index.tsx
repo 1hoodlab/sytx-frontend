@@ -105,7 +105,6 @@ export default function CreateContractInfo({ networks }: IProps) {
         setSubmitLoading(false);
       }
     } catch (error) {
-      console.log(error);
       setSubmitLoading(false);
     }
   };

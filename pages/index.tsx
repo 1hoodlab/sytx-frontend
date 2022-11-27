@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 import CreateContractInfo from "../components/create-contract";
 import { ListContracts } from "../components/list-contracts";
 import { NetWorkType } from "../components/list-contracts/card";
@@ -24,11 +25,22 @@ export interface Network {
   currency_symbol: string;
   block_explorer_url: string;
 }
+export interface Contract {
+  abi_url: string;
+  address: string;
+  id: string;
+  name: string;
+  network_support: Network;
+}
 
 interface IProps {
   networks: Network[];
+  contracts: Contract[];
 }
-export default function Home({ networks }: IProps) {
+export default function Home({ networks, contracts }: IProps) {
+  const [contractInfo, setContractInfo] = useState<Contract | undefined>(
+    undefined
+  );
   return (
     <Box
       height={"full"}
@@ -55,7 +67,10 @@ export default function Home({ networks }: IProps) {
           Contracts
         </Text>
         <Flex direction={"column"} height={"inherit"}>
-          <ListContracts />
+          <ListContracts
+            contracts={contracts}
+            setContractInfo={setContractInfo}
+          />
           <CreateContractInfo networks={networks} />
         </Flex>
       </Box>
@@ -85,7 +100,7 @@ export default function Home({ networks }: IProps) {
           position={"relative"}
           height={"inherit"}
         >
-          <TerminalComponent contractName="Minesweeper" />
+          {contractInfo && <TerminalComponent contract={contractInfo} />}
         </Box>
       </Box>
     </Box>
@@ -93,8 +108,11 @@ export default function Home({ networks }: IProps) {
 }
 export async function getServerSideProps() {
   // Fetch data from external API
-  const { data } = await axios(baseUrl + "/web3-transaction/networks");
+  const [networks, contracts] = await Promise.all([
+    axios(baseUrl + "/web3-transaction/networks"),
+    axios(baseUrl + "/web3-transaction/contracts"),
+  ]);
 
   // Pass data to the page via props
-  return { props: { networks: data } };
+  return { props: { networks: networks.data, contracts: contracts.data } };
 }

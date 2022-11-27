@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
+import { Contract } from "../../pages";
 import { exec } from "./commands";
 import { HistorySize, TermColors } from "./constants";
 import { getShellPrompt, handleBackspace, isPrintableKeyCode } from "./utils";
 
 interface IProps {
-  contractName: string;
+  contract: Contract;
 }
-export default function TerminalComponent({ contractName }: IProps) {
+export default function TerminalComponent({ contract }: IProps) {
   const terminalRef = useRef(null);
-
+  let termGlobal: Terminal;
   function printError(term: Terminal, error: string) {
     term.writeln(TermColors.Red + error);
   }
@@ -53,7 +54,7 @@ export default function TerminalComponent({ contractName }: IProps) {
     setTimeout(() => localStorage.setItem("history", JSON.stringify(store)), 0);
   }
 
-  function createOnKeyHandler(term: Terminal, contractName: string) {
+  function createOnKeyHandler(term: Terminal, contractInfo: Contract) {
     // Track the user input
     let userInput = "";
     // Track command history
@@ -62,7 +63,7 @@ export default function TerminalComponent({ contractName }: IProps) {
     let currentProcessId: any = null;
 
     function onProcessExit() {
-      prompt(term, contractName);
+      prompt(term, contractInfo.name);
       currentProcessId = null;
     }
 
@@ -107,9 +108,20 @@ export default function TerminalComponent({ contractName }: IProps) {
         }
         case "c": {
           if (ev.ctrlKey) {
-            prompt(term, contractName);
+            prompt(term, contractInfo.name);
             userInput = "";
             currentHistoryPosition = commandHistory.length;
+            return;
+          }
+          break;
+        }
+
+        case "v": {
+          if (ev.ctrlKey) {
+            navigator.clipboard.readText().then((text) => {
+              term.write(text);
+              userInput += text;
+            });
             return;
           }
           break;
@@ -130,14 +142,19 @@ export default function TerminalComponent({ contractName }: IProps) {
           userInput = userInput.trim();
           if (userInput.length === 0) {
             userInput = "";
-            prompt(term, contractName);
+            prompt(term, contractInfo.name);
             return;
           }
 
           term.writeln("");
 
           try {
-            const pId = await exec(term, userInput, onProcessExit);
+            const pId = await exec(
+              term,
+              userInput,
+              onProcessExit,
+              contractInfo
+            );
             if (pId) {
               currentProcessId = pId;
             }
@@ -156,7 +173,7 @@ export default function TerminalComponent({ contractName }: IProps) {
 
           userInput = "";
           if (currentProcessId === null) {
-            prompt(term, contractName);
+            prompt(term, contractInfo.name);
           }
           return;
         }
@@ -170,7 +187,7 @@ export default function TerminalComponent({ contractName }: IProps) {
     };
   }
 
-  async function runTerminal(terminalRef: HTMLElement) {
+  async function runTerminal(terminalRef: HTMLElement, contractInfo: Contract) {
     const term = new Terminal({
       allowTransparency: true,
       allowProposedApi: true,
@@ -187,29 +204,30 @@ export default function TerminalComponent({ contractName }: IProps) {
     term.open(terminalRef);
     fitAddon.fit();
     term.focus();
-    await initTerminalSession(term, contractName);
-    term.attachCustomKeyEventHandler((arg) => {
-      if (arg.ctrlKey && arg.code === "KeyV" && arg.type === "keydown") {
-        navigator.clipboard.readText().then((text) => {
-          term.write(text);
-        });
-      }
-      return true;
-    });
-    term.onKey(createOnKeyHandler(term, contractName));
+
+    await initTerminalSession(term, contractInfo.name);
+    term.onKey(createOnKeyHandler(term, contractInfo));
 
     return term;
   }
 
-  const run = useCallback(async () => {
-    if (terminalRef.current) {
-      return await runTerminal(terminalRef.current);
-    }
-  }, []);
+  const run = useCallback(
+    async (contractInfo: Contract) => {
+      if (terminalRef.current) {
+        termGlobal = await runTerminal(terminalRef.current, contractInfo);
+      }
+    },
+    [contract]
+  );
 
   useEffect(() => {
-    run();
-  }, []);
+    run(contract);
+    return () => {
+      if (termGlobal) {
+        termGlobal.dispose();
+      }
+    };
+  }, [contract]);
 
   return <div ref={terminalRef} className={"h-full overflow-y"} />;
 }
