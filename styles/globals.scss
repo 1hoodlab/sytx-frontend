@@ -34,3 +34,6 @@ a {
     color: black;
   }
 }
+.disable-scroll_bar::-webkit-scrollbar {
+  display: none;
+}

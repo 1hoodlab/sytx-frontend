@@ -15,8 +15,10 @@ export const ListContracts = ({ contracts, setContractInfo }: IProps) => {
       h={"100%"}
       padding={"40px 35px 20px 35px"}
       display={"flex"}
+      overflow={"auto"}
       flexDirection={"column"}
       gap={"20px"}
+      className={"disable-scroll_bar"}
     >
       {contracts?.map((contract, index) => (
         <ContractItem
