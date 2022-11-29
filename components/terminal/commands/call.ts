@@ -1,7 +1,5 @@
 import { Terminal } from "xterm";
-import { SystemCommand, SystemCommands } from ".";
-import { TermColors } from "../constants";
-import { colorize, getSpacing } from "../utils";
+import { SystemCommand } from ".";
 
 const call: SystemCommand = {
   id: "call",

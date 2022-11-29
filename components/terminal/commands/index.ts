@@ -5,8 +5,9 @@ import { colorize } from "../utils";
 import call from "./call";
 import find from "./find";
 import help from "./help";
-import ls from "./ls";
 import set from "./set";
+import info from "./info";
+import storage from "./storage";
 
 export type SystemCommand = {
   id: string;
@@ -22,7 +23,14 @@ export type SystemCommand = {
     contractInfo?: Contract
   ): Promise<any>;
 };
-export const SystemCommands: SystemCommand[] = [help, call, find, ls, set];
+export const SystemCommands: SystemCommand[] = [
+  help,
+  call,
+  find,
+  storage,
+  set,
+  info,
+];
 
 export async function exec(
   term: Terminal,

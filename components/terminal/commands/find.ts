@@ -1,15 +1,14 @@
 import axios from "axios";
 import { Terminal } from "xterm";
-import { SystemCommand, SystemCommands } from ".";
+import { SystemCommand } from ".";
 import { baseUrl } from "../../../constants";
-import { TermColors } from "../constants";
-import { colorize, getSpacing } from "../utils";
 
 const find: SystemCommand = {
   id: "find",
   args: 2,
   description: "Get event information from txhash",
-  usage: "find <event name> <txHash>",
+  usage:
+    "find <event name> <txHash>\r\nNote: Please set myaddress before using it",
   exec: async (term: Terminal, args: string[], onProcessExit, contractInfo) => {
     let { data } = await axios({
       method: "POST",
