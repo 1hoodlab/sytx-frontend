@@ -70,6 +70,7 @@ export default function Home({ networks, contracts }: IProps) {
           <ListContracts
             contracts={contracts}
             setContractInfo={setContractInfo}
+            contractCurrent={contractInfo}
           />
           <CreateContractInfo networks={networks} />
         </Flex>

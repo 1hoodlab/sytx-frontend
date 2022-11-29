@@ -6,9 +6,14 @@ import ContractItem, { NetWorkType } from "./card";
 interface IProps {
   contracts: Contract[];
   setContractInfo: any;
+  contractCurrent: Contract | undefined;
 }
 
-export const ListContracts = ({ contracts, setContractInfo }: IProps) => {
+export const ListContracts = ({
+  contracts,
+  setContractInfo,
+  contractCurrent,
+}: IProps) => {
   return (
     <Box
       flex={1}
@@ -24,6 +29,9 @@ export const ListContracts = ({ contracts, setContractInfo }: IProps) => {
         <ContractItem
           setContractInfo={() => setContractInfo(contract)}
           key={contract.id}
+          isActive={
+            contractCurrent && contractCurrent.address === contract.address
+          }
           networkType={contract.network_support.type as NetWorkType}
           contractName={contract.name}
           brandUrl={contract.network_support.icon_network_url}

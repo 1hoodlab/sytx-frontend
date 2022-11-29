@@ -12,6 +12,7 @@ interface IProps {
   contractName: string;
   contractAddress: string;
   setContractInfo: any;
+  isActive?: boolean;
 }
 
 export default function ContractItem({
@@ -19,6 +20,7 @@ export default function ContractItem({
   brandUrl,
   contractName,
   contractAddress,
+  isActive = false,
   setContractInfo,
 }: IProps) {
   return (
@@ -27,6 +29,7 @@ export default function ContractItem({
       bg={"rgba(217, 217, 217, 0.1);"}
       color={"white"}
       cursor={"pointer"}
+      className={isActive ? "card-active" : ""}
       _hover={{
         border: "1px solid #8000FF",
         transitionDuration: "0.3s",
