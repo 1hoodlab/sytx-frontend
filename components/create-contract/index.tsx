@@ -219,25 +219,6 @@ export default function CreateContractInfo({ networks }: IProps) {
                 </Select>
               </GridItem>
             </Grid>
-            <Stack>
-              <Text fontWeight={"600"} whiteSpace={"nowrap"}>
-                Event
-              </Text>
-              <Spacer />
-              <Textarea
-                _focus={{
-                  border: "1px solid #ffffff",
-                }}
-                value={eventRaws}
-                onChange={(e) => setEvents(e.target.value)}
-                fontSize={"13px"}
-                height={"130px"}
-                resize={"none"}
-                fontWeight={"bold"}
-                fontFamily={"'Roboto Mono', monospace;"}
-                placeholder="eg: BuyBox(buyer, numberOfTurns);"
-              />
-            </Stack>
           </ModalBody>
 
           <ModalFooter>

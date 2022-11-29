@@ -7,7 +7,7 @@ const help: SystemCommand = {
   id: "help",
   args: 0,
   exec: async (term: Terminal, args: string[]) => {
-    term.writeln("available commands:");
+    term.writeln("Available commands:");
     const firstCommandSpacing = SystemCommands[0].id.length + 12;
     for (const { id, description } of SystemCommands) {
       if (id === "help") continue;
@@ -19,6 +19,8 @@ const help: SystemCommand = {
           description
       );
     }
+    term.writeln("Storage value:");
+    
   },
 };
 
