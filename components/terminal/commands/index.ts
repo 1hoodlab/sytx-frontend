@@ -8,6 +8,7 @@ import help from "./help";
 import set from "./set";
 import info from "./info";
 import storage from "./storage";
+import findall from "./findall";
 
 export type SystemCommand = {
   id: string;
@@ -30,6 +31,7 @@ export const SystemCommands: SystemCommand[] = [
   storage,
   set,
   info,
+  findall,
 ];
 
 export async function exec(

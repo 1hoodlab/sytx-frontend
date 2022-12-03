@@ -34,8 +34,6 @@ export function insertDataStorage(key: string, value: string) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([{ [key]: value }]));
   } else {
     currentData = JSON.parse(currentDataRaw);
-    console.log(currentData);
-    console.log(find(currentData, key));
     if (find(currentData, key)) currentData = reject(currentData, key);
 
     localStorage.setItem(
@@ -47,6 +45,6 @@ export function insertDataStorage(key: string, value: string) {
 export function getDataStorage() {
   let currentDataRaw = localStorage.getItem(STORAGE_KEY);
   if (!currentDataRaw) return [];
-  const currentData = JSON.parse(currentDataRaw)
-  
+  const currentData = JSON.parse(currentDataRaw);
+  //TODO: Logic here
 }

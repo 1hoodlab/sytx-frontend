@@ -21,7 +21,6 @@ const info: SystemCommand = {
       baseURL: baseUrl,
       url: `/web3-transaction/contract/${contractInfo?.id}`,
     })) as { data: ContractDetail };
-    console.log(data);
     term.writeln(
       `${colorize(TermColors.Purple, "ABI")}     ${contractInfo?.abi_url}`
     );

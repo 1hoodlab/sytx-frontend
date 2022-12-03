@@ -21,7 +21,6 @@ const find: SystemCommand = {
       },
     });
     term.write(JSON.stringify(data));
-    console.log(data);
   },
 };
 
