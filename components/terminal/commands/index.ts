@@ -26,12 +26,12 @@ export type SystemCommand = {
 };
 export const SystemCommands: SystemCommand[] = [
   help,
-  call,
-  find,
-  storage,
-  set,
   info,
+  // call,
+  find,
   findall,
+  // storage,
+  set,
 ];
 
 export async function exec(
