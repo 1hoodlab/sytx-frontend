@@ -103,6 +103,7 @@ export default function CreateContractInfo({ networks }: IProps) {
       });
       if (data) {
         setSubmitLoading(false);
+        onClose();
       }
     } catch (error) {
       setSubmitLoading(false);
@@ -138,7 +139,7 @@ export default function CreateContractInfo({ networks }: IProps) {
             <Grid templateColumns="repeat(12, 1fr)" alignItems={"center"}>
               <GridItem colSpan={3}>
                 <Text fontWeight={"600"} whiteSpace={"nowrap"}>
-                  Contract name
+                  Contract name <span className="sytx-require">*</span>
                 </Text>
               </GridItem>
               <GridItem colSpan={9}>
@@ -153,7 +154,7 @@ export default function CreateContractInfo({ networks }: IProps) {
             <Grid templateColumns="repeat(12, 1fr)" alignItems={"center"}>
               <GridItem colSpan={3}>
                 <Text fontWeight={"600"} whiteSpace={"nowrap"}>
-                  Contract address
+                  Contract address <span className="sytx-require">*</span>
                 </Text>
               </GridItem>
               <GridItem colSpan={9}>
@@ -168,7 +169,7 @@ export default function CreateContractInfo({ networks }: IProps) {
             <Grid templateColumns="repeat(12, 1fr)" alignItems={"center"}>
               <GridItem colSpan={3}>
                 <Text fontWeight={"600"} whiteSpace={"nowrap"}>
-                  ABI File
+                  ABI File <span className="sytx-require">*</span>
                 </Text>
               </GridItem>
               <GridItem colSpan={9}>
@@ -199,7 +200,7 @@ export default function CreateContractInfo({ networks }: IProps) {
             <Grid templateColumns="repeat(12, 1fr)" alignItems={"center"}>
               <GridItem colSpan={3}>
                 <Text fontWeight={"600"} whiteSpace={"nowrap"}>
-                  Network
+                  Network <span className="sytx-require">*</span>
                 </Text>
               </GridItem>
               <GridItem colSpan={9}>
@@ -225,7 +226,10 @@ export default function CreateContractInfo({ networks }: IProps) {
             <Button
               colorScheme={"pink"}
               mr={3}
-              isLoading={submitLoading}
+              isDisabled={
+                !contractAddress || !contractName || !ABI?.url || !networkId
+              }
+              isLoading={submitLoading || uploadLoading}
               onClick={handleSubmit}
               borderRadius={0}
             >
